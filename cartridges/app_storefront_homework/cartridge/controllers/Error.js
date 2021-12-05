@@ -20,7 +20,7 @@ var consentTracking = require("*/cartridge/scripts/middleware/consentTracking");
  * @param {renders} - isml
  * @param {serverfunction} - get/post
  */
-server.use("Start", consentTracking.consent, function (req, res, next) {
+server.use("Start", function (req, res, next) {
     res.setStatusCode(500);
     var showError =
         system.getInstanceType() !== system.PRODUCTION_SYSTEM &&

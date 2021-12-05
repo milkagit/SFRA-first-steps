@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 /**
  * Middleware filter for get requests
@@ -8,10 +8,10 @@
  * @returns {void}
  */
 function get(req, res, next) {
-    if (req.httpMethod === 'GET') {
+    if (req.httpMethod === "GET") {
         next();
     } else {
-        next(new Error('Params do not match route'));
+        next(new Error("Params do not match route"));
     }
 }
 
@@ -23,10 +23,10 @@ function get(req, res, next) {
  * @returns {void}
  */
 function post(req, res, next) {
-    if (req.httpMethod === 'POST') {
+    if (req.httpMethod === "POST") {
         next();
     } else {
-        next(new Error('Params do not match route'));
+        next(new Error("Params do not match route"));
     }
 }
 
@@ -41,7 +41,7 @@ function https(req, res, next) {
     if (req.https) {
         next();
     } else {
-        next(new Error('Params do not match route'));
+        next(new Error("Params do not match route"));
     }
 }
 
@@ -56,7 +56,7 @@ function http(req, res, next) {
     if (!req.https) {
         next();
     } else {
-        next(new Error('Params do not match route'));
+        next(new Error("Params do not match route"));
     }
 }
 
@@ -71,7 +71,7 @@ function include(req, res, next) {
     if (req.includeRequest) {
         next();
     } else {
-        next(new Error('Params do not match route'));
+        next(new Error("Params do not match route"));
     }
 }
 
@@ -80,5 +80,5 @@ module.exports = {
     post: post,
     https: https,
     http: http,
-    include: include
+    include: include,
 };

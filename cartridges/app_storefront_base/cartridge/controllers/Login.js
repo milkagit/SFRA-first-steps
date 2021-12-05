@@ -1,13 +1,13 @@
-'use strict';
+"use strict";
 
 /**
  * @namespace Login
  */
 
-var server = require('server');
+var server = require("server");
 
-var csrfProtection = require('*/cartridge/scripts/middleware/csrf');
-var consentTracking = require('*/cartridge/scripts/middleware/consentTracking');
+var csrfProtection = require("*/cartridge/scripts/middleware/csrf");
+var consentTracking = require("*/cartridge/scripts/middleware/consentTracking");
 
 /**
  * Login-Show : This endpoint is called to load the login page
@@ -24,20 +24,26 @@ var consentTracking = require('*/cartridge/scripts/middleware/consentTracking');
  * @param {serverfunction} - get
  */
 server.get(
-    'Show',
+    "Show",
     consentTracking.consent,
     server.middleware.https,
     csrfProtection.generateToken,
     function (req, res, next) {
-        var URLUtils = require('dw/web/URLUtils');
-        var Resource = require('dw/web/Resource');
+        var URLUtils = require("dw/web/URLUtils");
+        var Resource = require("dw/web/Resource");
 
         var target = req.querystring.rurl || 1;
 
         var rememberMe = false;
-        var userName = '';
-        var actionUrl = URLUtils.url('Account-Login', 'rurl', target);
-        var createAccountUrl = URLUtils.url('Account-SubmitRegistration', 'rurl', target).relative().toString();
+        var userName = "";
+        var actionUrl = URLUtils.url("Account-Login", "rurl", target);
+        var createAccountUrl = URLUtils.url(
+            "Account-SubmitRegistration",
+            "rurl",
+            target
+        )
+            .relative()
+            .toString();
         var navTabValue = req.querystring.action;
 
         if (req.currentCustomer.credentials) {
@@ -47,23 +53,23 @@ server.get(
 
         var breadcrumbs = [
             {
-                htmlValue: Resource.msg('global.home', 'common', null),
-                url: URLUtils.home().toString()
-            }
+                htmlValue: Resource.msg("global.home", "common", null),
+                url: URLUtils.home().toString(),
+            },
         ];
 
-        var profileForm = server.forms.getForm('profile');
+        var profileForm = server.forms.getForm("profile");
         profileForm.clear();
 
-        res.render('/account/login', {
-            navTabValue: navTabValue || 'login',
+        res.render("/account/login", {
+            navTabValue: navTabValue || "login",
             rememberMe: rememberMe,
             userName: userName,
             actionUrl: actionUrl,
             profileForm: profileForm,
             breadcrumbs: breadcrumbs,
             oAuthReentryEndpoint: 1,
-            createAccountUrl: createAccountUrl
+            createAccountUrl: createAccountUrl,
         });
 
         next();
@@ -78,12 +84,12 @@ server.get(
  * @param {category} - sensitive
  * @param {serverfunction} - get
  */
-server.get('Logout', function (req, res, next) {
-    var URLUtils = require('dw/web/URLUtils');
-    var CustomerMgr = require('dw/customer/CustomerMgr');
+server.get("Logout", function (req, res, next) {
+    var URLUtils = require("dw/web/URLUtils");
+    var CustomerMgr = require("dw/customer/CustomerMgr");
 
     CustomerMgr.logoutCustomer(false);
-    res.redirect(URLUtils.url('Home-Show'));
+    res.redirect(URLUtils.url("Home-Show"));
     next();
 });
 
@@ -100,51 +106,68 @@ server.get('Logout', function (req, res, next) {
  * @param {renders} - isml if there is an error
  * @param {serverfunction} - get
  */
-server.get('OAuthLogin', server.middleware.https, consentTracking.consent, function (req, res, next) {
-    var oauthLoginFlowMgr = require('dw/customer/oauth/OAuthLoginFlowMgr');
-    var Resource = require('dw/web/Resource');
-    var endpoints = require('*/cartridge/config/oAuthRenentryRedirectEndpoints');
+server.get(
+    "OAuthLogin",
+    server.middleware.https,
+    consentTracking.consent,
+    function (req, res, next) {
+        var oauthLoginFlowMgr = require("dw/customer/oauth/OAuthLoginFlowMgr");
+        var Resource = require("dw/web/Resource");
+        var endpoints = require("*/cartridge/config/oAuthRenentryRedirectEndpoints");
 
-    var targetEndPoint = req.querystring.oauthLoginTargetEndPoint
-        ? parseInt(req.querystring.oauthLoginTargetEndPoint, 10)
-        : null;
+        var targetEndPoint = req.querystring.oauthLoginTargetEndPoint
+            ? parseInt(req.querystring.oauthLoginTargetEndPoint, 10)
+            : null;
 
-    if (targetEndPoint && endpoints[targetEndPoint]) {
-        req.session.privacyCache.set(
-            'oauthLoginTargetEndPoint',
-            endpoints[targetEndPoint]
-        );
-    } else {
-        res.render('/error', {
-            message: Resource.msg('error.oauth.login.failure', 'login', null)
-        });
-
-        return next();
-    }
-
-    if (req.querystring.oauthProvider) {
-        var oauthProvider = req.querystring.oauthProvider;
-        var result = oauthLoginFlowMgr.initiateOAuthLogin(oauthProvider);
-
-        if (result) {
-            res.redirect(result.location);
+        if (targetEndPoint && endpoints[targetEndPoint]) {
+            req.session.privacyCache.set(
+                "oauthLoginTargetEndPoint",
+                endpoints[targetEndPoint]
+            );
         } else {
-            res.render('/error', {
-                message: Resource.msg('error.oauth.login.failure', 'login', null)
+            res.render("/error", {
+                message: Resource.msg(
+                    "error.oauth.login.failure",
+                    "login",
+                    null
+                ),
             });
 
             return next();
         }
-    } else {
-        res.render('/error', {
-            message: Resource.msg('error.oauth.login.failure', 'login', null)
-        });
+
+        if (req.querystring.oauthProvider) {
+            var oauthProvider = req.querystring.oauthProvider;
+            var result = oauthLoginFlowMgr.initiateOAuthLogin(oauthProvider);
+
+            if (result) {
+                res.redirect(result.location);
+            } else {
+                res.render("/error", {
+                    message: Resource.msg(
+                        "error.oauth.login.failure",
+                        "login",
+                        null
+                    ),
+                });
+
+                return next();
+            }
+        } else {
+            res.render("/error", {
+                message: Resource.msg(
+                    "error.oauth.login.failure",
+                    "login",
+                    null
+                ),
+            });
+
+            return next();
+        }
 
         return next();
     }
-
-    return next();
-});
+);
 
 /**
  * Login-OAuthReentry : This endpoint is called by the External OAuth Login Provider (Facebook, Google etc. to re-enter storefront after shopper logs in using their service
@@ -159,124 +182,160 @@ server.get('OAuthLogin', server.middleware.https, consentTracking.consent, funct
  * @param {renders} - isml only if there is a error
  * @param {serverfunction} - get
  */
-server.get('OAuthReentry', server.middleware.https, consentTracking.consent, function (req, res, next) {
-    var URLUtils = require('dw/web/URLUtils');
-    var oauthLoginFlowMgr = require('dw/customer/oauth/OAuthLoginFlowMgr');
-    var CustomerMgr = require('dw/customer/CustomerMgr');
-    var Transaction = require('dw/system/Transaction');
-    var Resource = require('dw/web/Resource');
+server.get(
+    "OAuthReentry",
+    server.middleware.https,
+    consentTracking.consent,
+    function (req, res, next) {
+        var URLUtils = require("dw/web/URLUtils");
+        var oauthLoginFlowMgr = require("dw/customer/oauth/OAuthLoginFlowMgr");
+        var CustomerMgr = require("dw/customer/CustomerMgr");
+        var Transaction = require("dw/system/Transaction");
+        var Resource = require("dw/web/Resource");
 
-    var destination = req.session.privacyCache.store.oauthLoginTargetEndPoint;
+        var destination =
+            req.session.privacyCache.store.oauthLoginTargetEndPoint;
 
-    var finalizeOAuthLoginResult = oauthLoginFlowMgr.finalizeOAuthLogin();
-    if (!finalizeOAuthLoginResult) {
-        res.redirect(URLUtils.url('Login-Show'));
-        return next();
-    }
+        var finalizeOAuthLoginResult = oauthLoginFlowMgr.finalizeOAuthLogin();
+        if (!finalizeOAuthLoginResult) {
+            res.redirect(URLUtils.url("Login-Show"));
+            return next();
+        }
 
-    var response = finalizeOAuthLoginResult.userInfoResponse.userInfo;
-    var oauthProviderID = finalizeOAuthLoginResult.accessTokenResponse.oauthProviderId;
+        var response = finalizeOAuthLoginResult.userInfoResponse.userInfo;
+        var oauthProviderID =
+            finalizeOAuthLoginResult.accessTokenResponse.oauthProviderId;
 
-    if (!oauthProviderID) {
-        res.render('/error', {
-            message: Resource.msg('error.oauth.login.failure', 'login', null)
-        });
+        if (!oauthProviderID) {
+            res.render("/error", {
+                message: Resource.msg(
+                    "error.oauth.login.failure",
+                    "login",
+                    null
+                ),
+            });
 
-        return next();
-    }
+            return next();
+        }
 
-    if (!response) {
-        res.render('/error', {
-            message: Resource.msg('error.oauth.login.failure', 'login', null)
-        });
+        if (!response) {
+            res.render("/error", {
+                message: Resource.msg(
+                    "error.oauth.login.failure",
+                    "login",
+                    null
+                ),
+            });
 
-        return next();
-    }
+            return next();
+        }
 
-    var externalProfile = JSON.parse(response);
-    if (!externalProfile) {
-        res.render('/error', {
-            message: Resource.msg('error.oauth.login.failure', 'login', null)
-        });
+        var externalProfile = JSON.parse(response);
+        if (!externalProfile) {
+            res.render("/error", {
+                message: Resource.msg(
+                    "error.oauth.login.failure",
+                    "login",
+                    null
+                ),
+            });
 
-        return next();
-    }
+            return next();
+        }
 
-    var userID = externalProfile.id || externalProfile.uid;
-    if (!userID) {
-        res.render('/error', {
-            message: Resource.msg('error.oauth.login.failure', 'login', null)
-        });
+        var userID = externalProfile.id || externalProfile.uid;
+        if (!userID) {
+            res.render("/error", {
+                message: Resource.msg(
+                    "error.oauth.login.failure",
+                    "login",
+                    null
+                ),
+            });
 
-        return next();
-    }
+            return next();
+        }
 
-    var authenticatedCustomerProfile = CustomerMgr.getExternallyAuthenticatedCustomerProfile(
-        oauthProviderID,
-        userID
-    );
-
-    if (!authenticatedCustomerProfile) {
-        // Create new profile
-        Transaction.wrap(function () {
-            var newCustomer = CustomerMgr.createExternallyAuthenticatedCustomer(
+        var authenticatedCustomerProfile =
+            CustomerMgr.getExternallyAuthenticatedCustomerProfile(
                 oauthProviderID,
                 userID
             );
 
-            authenticatedCustomerProfile = newCustomer.getProfile();
-            var firstName;
-            var lastName;
-            var email;
+        if (!authenticatedCustomerProfile) {
+            // Create new profile
+            Transaction.wrap(function () {
+                var newCustomer =
+                    CustomerMgr.createExternallyAuthenticatedCustomer(
+                        oauthProviderID,
+                        userID
+                    );
 
-            // Google comes with a 'name' property that holds first and last name.
-            if (typeof externalProfile.name === 'object') {
-                firstName = externalProfile.name.givenName;
-                lastName = externalProfile.name.familyName;
-            } else {
-                // The other providers use one of these, GitHub has just a 'name'.
-                firstName = externalProfile['first-name']
-                    || externalProfile.first_name
-                    || externalProfile.name;
+                authenticatedCustomerProfile = newCustomer.getProfile();
+                var firstName;
+                var lastName;
+                var email;
 
-                lastName = externalProfile['last-name']
-                    || externalProfile.last_name
-                    || externalProfile.name;
-            }
+                // Google comes with a 'name' property that holds first and last name.
+                if (typeof externalProfile.name === "object") {
+                    firstName = externalProfile.name.givenName;
+                    lastName = externalProfile.name.familyName;
+                } else {
+                    // The other providers use one of these, GitHub has just a 'name'.
+                    firstName =
+                        externalProfile["first-name"] ||
+                        externalProfile.first_name ||
+                        externalProfile.name;
 
-            email = externalProfile['email-address'] || externalProfile.email;
-
-            if (!email) {
-                var emails = externalProfile.emails;
-
-                if (emails && emails.length) {
-                    email = externalProfile.emails[0].value;
+                    lastName =
+                        externalProfile["last-name"] ||
+                        externalProfile.last_name ||
+                        externalProfile.name;
                 }
-            }
 
-            authenticatedCustomerProfile.setFirstName(firstName);
-            authenticatedCustomerProfile.setLastName(lastName);
-            authenticatedCustomerProfile.setEmail(email);
-        });
-    }
+                email =
+                    externalProfile["email-address"] || externalProfile.email;
 
-    var credentials = authenticatedCustomerProfile.getCredentials();
-    if (credentials.isEnabled()) {
-        Transaction.wrap(function () {
-            CustomerMgr.loginExternallyAuthenticatedCustomer(oauthProviderID, userID, false);
-        });
-    } else {
-        res.render('/error', {
-            message: Resource.msg('error.oauth.login.failure', 'login', null)
-        });
+                if (!email) {
+                    var emails = externalProfile.emails;
+
+                    if (emails && emails.length) {
+                        email = externalProfile.emails[0].value;
+                    }
+                }
+
+                authenticatedCustomerProfile.setFirstName(firstName);
+                authenticatedCustomerProfile.setLastName(lastName);
+                authenticatedCustomerProfile.setEmail(email);
+            });
+        }
+
+        var credentials = authenticatedCustomerProfile.getCredentials();
+        if (credentials.isEnabled()) {
+            Transaction.wrap(function () {
+                CustomerMgr.loginExternallyAuthenticatedCustomer(
+                    oauthProviderID,
+                    userID,
+                    false
+                );
+            });
+        } else {
+            res.render("/error", {
+                message: Resource.msg(
+                    "error.oauth.login.failure",
+                    "login",
+                    null
+                ),
+            });
+
+            return next();
+        }
+
+        req.session.privacyCache.clear();
+        res.redirect(URLUtils.url(destination));
 
         return next();
     }
-
-    req.session.privacyCache.clear();
-    res.redirect(URLUtils.url(destination));
-
-    return next();
-});
+);
 
 module.exports = server.exports();
