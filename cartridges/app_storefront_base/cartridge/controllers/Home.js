@@ -9,7 +9,7 @@ var cache = require("*/cartridge/scripts/middleware/cache");
 var consentTracking = require("*/cartridge/scripts/middleware/consentTracking");
 var pageMetaData = require("*/cartridge/scripts/middleware/pageMetaData");
 
-var userLoggedIn = require("*/cartridge/scripts/middleware/userLoggedIn");
+// var userLoggedIn = require("*/cartridge/scripts/middleware/userLoggedIn");
 /**
  * Any customization on this endpoint , also requires update for Default-Start endpoint
  */
@@ -25,39 +25,39 @@ var userLoggedIn = require("*/cartridge/scripts/middleware/userLoggedIn");
  * @param {serverfunction} - get
  */
 server.get(
-    "Show",
-    consentTracking.consent,
-    cache.applyDefaultCache,
-    server.middleware.https,
-    userLoggedIn.validateLoggedIn,
-    consentTracking.consent,
-    function (req, res, next) {
-        var Site = require("dw/system/Site");
-        var PageMgr = require("dw/experience/PageMgr");
-        var pageMetaHelper = require("*/cartridge/scripts/helpers/pageMetaHelper");
+  "Show",
+  consentTracking.consent,
+  cache.applyDefaultCache,
+  // server.middleware.https,
+  // userLoggedIn.validateLoggedIn,
+  consentTracking.consent,
+  function (req, res, next) {
+    var Site = require("dw/system/Site");
+    var PageMgr = require("dw/experience/PageMgr");
+    var pageMetaHelper = require("*/cartridge/scripts/helpers/pageMetaHelper");
 
-        var CustomerMgr = require("dw/customer/CustomerMgr");
-        var Resource = require("dw/web/Resource");
-        var URLUtils = require("dw/web/URLUtils");
+    // var CustomerMgr = require("dw/customer/CustomerMgr");
+    // var Resource = require("dw/web/Resource");
+    // var URLUtils = require("dw/web/URLUtils");
 
-        pageMetaHelper.setPageMetaTags(req.pageMetaData, Site.current);
+    pageMetaHelper.setPageMetaTags(req.pageMetaData, Site.current);
 
-        var page = PageMgr.getPage("homepage");
+    var page = PageMgr.getPage("homepage");
 
-        if (page && page.isVisible()) {
-            res.page("homepage");
-        } else {
-            res.render("home/homePage");
-        }
-        next();
-    },
-    pageMetaData.computedPageMetaData
+    if (page && page.isVisible()) {
+      res.page("homepage");
+    } else {
+      res.render("home/homePage");
+    }
+    next();
+  },
+  pageMetaData.computedPageMetaData
 );
 
 server.get("ErrorNotFound", function (req, res, next) {
-    res.setStatusCode(404);
-    res.render("error/notFound");
-    next();
+  res.setStatusCode(404);
+  res.render("error/notFound");
+  next();
 });
 
 module.exports = server.exports();

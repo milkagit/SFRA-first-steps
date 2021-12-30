@@ -43,3 +43,5 @@ test/appium/webdriver/config.json
 .idea
 test/acceptance/report
 test/integration/config.json
+
+rvw_developers_core
