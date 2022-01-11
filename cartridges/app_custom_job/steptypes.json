@@ -1,0 +1,16 @@
+{
+  "step-types": {
+    "script-module-step": [
+      {
+        "@type-id": "custom.HomeworkJobStep",
+        "description": "My custom script step type",
+        "module": "app_custom_job/cartridge/scripts/steps/HomeworkModuleJob"
+      },
+      {
+        "@type-id": "custom.DemoTestJobStep",
+        "description": "My custom script step type",
+        "module": "app_custom_job/cartridge/scripts/steps/DemoTestModuleJob"
+      }
+    ]
+  }
+}
