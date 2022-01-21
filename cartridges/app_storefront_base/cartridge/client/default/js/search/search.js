@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 /**
  * Update DOM elements with Ajax results
@@ -8,8 +8,8 @@
  * @return {undefined}
  */
 function updateDom($results, selector) {
-    var $updates = $results.find(selector);
-    $(selector).empty().html($updates.html());
+  var $updates = $results.find(selector);
+  $(selector).empty().html($updates.html());
 }
 
 /**
@@ -19,14 +19,16 @@ function updateDom($results, selector) {
  * @return {undefined}
  */
 function handleRefinements($results) {
-    $('.refinement.active').each(function () {
-        $(this).removeClass('active');
-        var activeDiv = $results.find('.' + $(this)[0].className.replace(/ /g, '.'));
-        activeDiv.addClass('active');
-        activeDiv.find('button.title').attr('aria-expanded', 'true');
-    });
+  $(".refinement.active").each(function () {
+    $(this).removeClass("active");
+    var activeDiv = $results.find(
+      "." + $(this)[0].className.replace(/ /g, ".")
+    );
+    activeDiv.addClass("active");
+    activeDiv.find("button.title").attr("aria-expanded", "true");
+  });
 
-    updateDom($results, '.refinements');
+  updateDom($results, ".refinements");
 }
 
 /**
@@ -36,26 +38,26 @@ function handleRefinements($results) {
  * @return {undefined}
  */
 function parseResults(response) {
-    var $results = $(response);
-    var specialHandlers = {
-        '.refinements': handleRefinements
-    };
+  var $results = $(response);
+  var specialHandlers = {
+    ".refinements": handleRefinements,
+  };
 
-    // Update DOM elements that do not require special handling
-    [
-        '.grid-header',
-        '.header-bar',
-        '.header.page-title',
-        '.product-grid',
-        '.show-more',
-        '.filter-bar'
-    ].forEach(function (selector) {
-        updateDom($results, selector);
-    });
+  // Update DOM elements that do not require special handling
+  [
+    ".grid-header",
+    ".header-bar",
+    ".header.page-title",
+    ".product-grid",
+    ".show-more",
+    ".filter-bar",
+  ].forEach(function (selector) {
+    updateDom($results, selector);
+  });
 
-    Object.keys(specialHandlers).forEach(function (selector) {
-        specialHandlers[selector]($results);
-    });
+  Object.keys(specialHandlers).forEach(function (selector) {
+    specialHandlers[selector]($results);
+  });
 }
 
 /**
@@ -65,19 +67,19 @@ function parseResults(response) {
  * @return {undefined}
  */
 function getContent($element, $target) {
-    var showMoreUrl = $element.data('url');
-    $.spinner().start();
-    $.ajax({
-        url: showMoreUrl,
-        method: 'GET',
-        success: function (response) {
-            $target.append(response);
-            $.spinner().stop();
-        },
-        error: function () {
-            $.spinner().stop();
-        }
-    });
+  var showMoreUrl = $element.data("url");
+  $.spinner().start();
+  $.ajax({
+    url: showMoreUrl,
+    method: "GET",
+    success: function (response) {
+      $target.append(response);
+      $.spinner().stop();
+    },
+    error: function () {
+      $.spinner().stop();
+    },
+  });
 }
 
 /**
@@ -87,137 +89,166 @@ function getContent($element, $target) {
  * @return {undefined}
  */
 function updateSortOptions(response) {
-    var $tempDom = $('<div>').append($(response));
-    var sortOptions = $tempDom.find('.grid-footer').data('sort-options').options;
-    sortOptions.forEach(function (option) {
-        $('option.' + option.id).val(option.url);
-    });
+  var $tempDom = $("<div>").append($(response));
+  var sortOptions = $tempDom.find(".grid-footer").data("sort-options").options;
+  sortOptions.forEach(function (option) {
+    $("option." + option.id).val(option.url);
+  });
 }
 
 module.exports = {
-    filter: function () {
-        // Display refinements bar when Menu icon clicked
-        $('.container').on('click', 'button.filter-results', function () {
-            $('.refinement-bar, .modal-background').show();
-            $('.refinement-bar').siblings().attr('aria-hidden', true);
-            $('.refinement-bar').closest('.row').siblings().attr('aria-hidden', true);
-            $('.refinement-bar').closest('.tab-pane.active').siblings().attr('aria-hidden', true);
-            $('.refinement-bar').closest('.container.search-results').siblings().attr('aria-hidden', true);
-            $('.refinement-bar .close').focus();
+  filter: function () {
+    // Display refinements bar when Menu icon clicked
+    $(".container").on("click", "button.filter-results", function () {
+      $(".refinement-bar, .modal-background").show();
+      $(".refinement-bar").siblings().attr("aria-hidden", true);
+      $(".refinement-bar").closest(".row").siblings().attr("aria-hidden", true);
+      $(".refinement-bar")
+        .closest(".tab-pane.active")
+        .siblings()
+        .attr("aria-hidden", true);
+      $(".refinement-bar")
+        .closest(".container.search-results")
+        .siblings()
+        .attr("aria-hidden", true);
+      $(".refinement-bar .close").focus();
+    });
+  },
+
+  closeRefinements: function () {
+    // Refinements close button
+    $(".container").on(
+      "click",
+      ".refinement-bar button.close, .modal-background",
+      function () {
+        $(".refinement-bar, .modal-background").hide();
+        $(".refinement-bar").siblings().attr("aria-hidden", false);
+        $(".refinement-bar")
+          .closest(".row")
+          .siblings()
+          .attr("aria-hidden", false);
+        $(".refinement-bar")
+          .closest(".tab-pane.active")
+          .siblings()
+          .attr("aria-hidden", false);
+        $(".refinement-bar")
+          .closest(".container.search-results")
+          .siblings()
+          .attr("aria-hidden", false);
+        $(".btn.filter-results").focus();
+      }
+    );
+  },
+
+  resize: function () {
+    // Close refinement bar and hide modal background if user resizes browser
+    $(window).resize(function () {
+      $(".refinement-bar, .modal-background").hide();
+      $(".refinement-bar").siblings().attr("aria-hidden", false);
+      $(".refinement-bar")
+        .closest(".row")
+        .siblings()
+        .attr("aria-hidden", false);
+      $(".refinement-bar")
+        .closest(".tab-pane.active")
+        .siblings()
+        .attr("aria-hidden", false);
+      $(".refinement-bar")
+        .closest(".container.search-results")
+        .siblings()
+        .attr("aria-hidden", false);
+    });
+  },
+
+  sort: function () {
+    // Handle sort order menu selection
+    $(".container").on("change", "[name=sort-order]", function (e) {
+      e.preventDefault();
+
+      $.spinner().start();
+      $(this).trigger("search:sort", this.value);
+      $.ajax({
+        url: this.value,
+        data: { selectedUrl: this.value },
+        method: "GET",
+        success: function (response) {
+          $(".product-grid").empty().html(response);
+          $.spinner().stop();
+        },
+        error: function () {
+          $.spinner().stop();
+        },
+      });
+    });
+  },
+
+  showMore: function () {
+    // Show more products
+    $(".container").on("click", ".show-more button", function (e) {
+      e.stopPropagation();
+      var showMoreUrl = $(this).data("url");
+      e.preventDefault();
+
+      $.spinner().start();
+      $(this).trigger("search:showMore", e);
+      $.ajax({
+        url: showMoreUrl,
+        data: { selectedUrl: showMoreUrl },
+        method: "GET",
+        success: function (response) {
+          $(".grid-footer").replaceWith(response);
+          updateSortOptions(response);
+          $.spinner().stop();
+        },
+        error: function () {
+          $.spinner().stop();
+        },
+      });
+    });
+  },
+
+  applyFilter: function () {
+    // Handle refinement value selection and reset click
+    $(".container").on(
+      "click",
+      ".refinements li button, .refinement-bar button.reset, .filter-value button, .swatch-filter button",
+      function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        $.spinner().start();
+        $(this).trigger("search:filter", e);
+        $.ajax({
+          url: $(this).data("href"),
+          data: {
+            page: $(".grid-footer").data("page-number"),
+            selectedUrl: $(this).data("href"),
+          },
+          method: "GET",
+          success: function (response) {
+            parseResults(response);
+            $.spinner().stop();
+          },
+          error: function () {
+            $.spinner().stop();
+          },
         });
-    },
+      }
+    );
+  },
 
-    closeRefinements: function () {
-        // Refinements close button
-        $('.container').on('click', '.refinement-bar button.close, .modal-background', function () {
-            $('.refinement-bar, .modal-background').hide();
-            $('.refinement-bar').siblings().attr('aria-hidden', false);
-            $('.refinement-bar').closest('.row').siblings().attr('aria-hidden', false);
-            $('.refinement-bar').closest('.tab-pane.active').siblings().attr('aria-hidden', false);
-            $('.refinement-bar').closest('.container.search-results').siblings().attr('aria-hidden', false);
-            $('.btn.filter-results').focus();
-        });
-    },
+  showContentTab: function () {
+    // Display content results from the search
+    $(".container").on("click", ".content-search", function () {
+      if ($("#content-search-results").html() === "") {
+        getContent($(this), $("#content-search-results"));
+      }
+    });
 
-    resize: function () {
-        // Close refinement bar and hide modal background if user resizes browser
-        $(window).resize(function () {
-            $('.refinement-bar, .modal-background').hide();
-            $('.refinement-bar').siblings().attr('aria-hidden', false);
-            $('.refinement-bar').closest('.row').siblings().attr('aria-hidden', false);
-            $('.refinement-bar').closest('.tab-pane.active').siblings().attr('aria-hidden', false);
-            $('.refinement-bar').closest('.container.search-results').siblings().attr('aria-hidden', false);
-        });
-    },
-
-    sort: function () {
-        // Handle sort order menu selection
-        $('.container').on('change', '[name=sort-order]', function (e) {
-            e.preventDefault();
-
-            $.spinner().start();
-            $(this).trigger('search:sort', this.value);
-            $.ajax({
-                url: this.value,
-                data: { selectedUrl: this.value },
-                method: 'GET',
-                success: function (response) {
-                    $('.product-grid').empty().html(response);
-                    $.spinner().stop();
-                },
-                error: function () {
-                    $.spinner().stop();
-                }
-            });
-        });
-    },
-
-    showMore: function () {
-        // Show more products
-        $('.container').on('click', '.show-more button', function (e) {
-            e.stopPropagation();
-            var showMoreUrl = $(this).data('url');
-            e.preventDefault();
-
-            $.spinner().start();
-            $(this).trigger('search:showMore', e);
-            $.ajax({
-                url: showMoreUrl,
-                data: { selectedUrl: showMoreUrl },
-                method: 'GET',
-                success: function (response) {
-                    $('.grid-footer').replaceWith(response);
-                    updateSortOptions(response);
-                    $.spinner().stop();
-                },
-                error: function () {
-                    $.spinner().stop();
-                }
-            });
-        });
-    },
-
-    applyFilter: function () {
-        // Handle refinement value selection and reset click
-        $('.container').on(
-            'click',
-            '.refinements li button, .refinement-bar button.reset, .filter-value button, .swatch-filter button',
-            function (e) {
-                e.preventDefault();
-                e.stopPropagation();
-
-                $.spinner().start();
-                $(this).trigger('search:filter', e);
-                $.ajax({
-                    url: $(this).data('href'),
-                    data: {
-                        page: $('.grid-footer').data('page-number'),
-                        selectedUrl: $(this).data('href')
-                    },
-                    method: 'GET',
-                    success: function (response) {
-                        parseResults(response);
-                        $.spinner().stop();
-                    },
-                    error: function () {
-                        $.spinner().stop();
-                    }
-                });
-            });
-    },
-
-    showContentTab: function () {
-        // Display content results from the search
-        $('.container').on('click', '.content-search', function () {
-            if ($('#content-search-results').html() === '') {
-                getContent($(this), $('#content-search-results'));
-            }
-        });
-
-        // Display the next page of content results from the search
-        $('.container').on('click', '.show-more-content button', function () {
-            getContent($(this), $('#content-search-results'));
-            $('.show-more-content').remove();
-        });
-    }
+    // Display the next page of content results from the search
+    $(".container").on("click", ".show-more-content button", function () {
+      getContent($(this), $("#content-search-results"));
+      $(".show-more-content").remove();
+    });
+  },
 };

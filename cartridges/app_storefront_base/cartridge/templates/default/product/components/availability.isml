@@ -8,12 +8,11 @@
         <li>
             <isif condition="${!product.readyToOrder}">
                 <div>${Resource.msg('info.selectforstock', 'product', 'Select Styles for Availability')}</div>
-            <iselse>
-                <isloop items="${product.availability.messages}" var="message">
-                    <div>${message}</div>
-                </isloop>
+                <iselse>
+                    <isloop items="${product.availability.messages}" var="message">
+                        <div>${message}</div>
+                    </isloop>
             </isif>
         </li>
     </ul>
 </div>
-

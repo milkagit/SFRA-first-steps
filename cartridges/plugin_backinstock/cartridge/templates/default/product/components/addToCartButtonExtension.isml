@@ -1,0 +1,37 @@
+<isscript>
+  var ContentMgr = require("dw/content/ContentMgr")
+  var headerAsset = ContentMgr.getContent('Phone_notification_message')
+</isscript>
+
+<isif condition="${!product.available}">
+  <div class="row back-to-stock">
+    <div class="col-sm-12">
+      <input type="hidden" class="add-to-notificationList-url" value="${product.id}" />
+      <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#backToStockModal"
+        data-pid="${product.id}">
+        ${Resource.msg('button.backtostock', 'form', null)}
+      </button>
+    </div>
+  </div>
+</isif>
+
+<div id="backToStockModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <isif condition="${!empty(headerAsset) && headerAsset.isOnline()}">
+          <isprint value="${headerAsset.custom.body}" encoding="off" />
+        </isif>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="container">
+          <isinclude template="/product/components/backInStockForm" value="${product.id}" />
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
