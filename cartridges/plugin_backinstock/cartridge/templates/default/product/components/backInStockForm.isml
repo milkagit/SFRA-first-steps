@@ -1,78 +1,24 @@
-<iscomment> <isscript>
-  var ContentMgr = require("dw/content/ContentMgr");
-  var URLUtils = require('dw/web/URLUtils');
-</isscript>
+<isset name="product" value="${pdict.product}" scope="page" />
 
- <isset name="product" value="${pdict.product}" scope="page" />
-
-<form action="${URLUtils.url('Twilio-Save')}" class="form" name="backInStockForm" method="POST" <isprint
-  value="${pdict.backInStockForm.attributes}" encoding="off" />>
-  ${product.id} </iscomment>
-
-  <iscomment> hidden field for productID </iscomment>
-  <iscomment> <div class="form-group
-            <isif condition="${pdict.backInStockForm.productId.mandatory === true}">required</isif>">
-
-    <input  type="text" class="form-control" id="productId"  encoding="off" value="${product.id}" <isprint
-        value=" ${pdict.backInStockForm.productId.attributes}" encoding="off" />>
-    <div class="invalid-feedback"></div>
-  </div> </iscomment>
-
-
-  <iscomment> phone number field </iscomment>
-  <iscomment> <div class="form-group
-            <isif condition=" ${pdict.backInStockForm.phoneNumbers.mandatory === true}">required</isif>">
-
-    <input type="text" class="form-control" id="phoneNumbers" <isprint
-      value="${pdict.backInStockForm.phoneNumbers.attributes}" encoding="off" />>
-    <div class="invalid-feedback"></div>
-  </div>
- </iscomment>
-
-  <iscomment> submit button </iscomment>
-  <iscomment> <button type="submit" name="save" class="btn btn-save btn-block btn-primary">${Resource.msg('button.submit', 'form', null)}</button>
-  <input type="hidden" name="${dw.web.CSRFProtection.getTokenName()}" value="${dw.web.CSRFProtection.generateToken()}">
-
-
-</form> </iscomment>
-
-
-<isscript>
-  var ContentMgr = require("dw/content/ContentMgr");
-  var URLUtils = require('dw/web/URLUtils');
-</isscript>
-
- <isset name="product" value="${pdict.product}" scope="page" />
-
-<form action="${URLUtils.url('Twilio-Save')}" class="backInStockForm" name="backInStockForm" method="POST"  encoding="off" />
-
-
-  <iscomment> hidden field for productID </iscomment>
-  <div class="form-group required">
-
-    <input  type="hidden" class="form-control" id="productId" name="productId" encoding="off" value="${pdict.product.id}" >
-    <div class="invalid-feedback"></div>
-  </div>
-
+<form action="${URLUtils.url('Twilio-Save')}" class="backInStockForm" name="backInStockForm" method="POST"  encoding="off"
+<isprint value="${pdict.backInStockForm.attributes}"/>
 
   <iscomment> phone number field </iscomment>
   <div class="form-group required">
 
-    <input type="text" class="form-control" name="phoneNumbers" id="phoneNumbers"
-    value="${pdict.backInStockForm.phoneNumbers.attributes}"
+    <input type="text" class="form-control" name="phoneNumbers" id="phoneNumbers" required
      <isprint
       value="${pdict.backInStockForm.phoneNumbers.attributes}" encoding="off" />>
     <div class="invalid-feedback"></div>
   </div>
 
+  <iscomment> hidden field for productID </iscomment>
+  <input  type="hidden" class="form-control" id="productId" name="productId" encoding="off" value="${pdict.product.id}"  >
 
   <iscomment> submit button </iscomment>
   <button type="submit" name="save" class="btn btn-backInStock btn-save btn-block btn-primary">${Resource.msg('button.submit', 'form', null)}</button>
   <input type="hidden" name="${dw.web.CSRFProtection.getTokenName()}" value="${dw.web.CSRFProtection.generateToken()}">
 
-
 </form>
 
-
-<iscomment> <isprint value="${pdict.backInStockForm.attributes}"
-<isprint value=" ${pdict.backInStockForm.productId.attributes}" encoding="off" /> </iscomment>
+<iscomment> value="${pdict.backInStockForm.phoneNumbers.attributes}" </iscomment>

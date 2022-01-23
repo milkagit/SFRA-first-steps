@@ -61,39 +61,35 @@ server.post(
 
     var error = false;
 
-    // var displayErrorMessage;
-    // var successMessage;
-    //initial variables end
+    if (backInStockForm.valid) {
+      try {
+        if (!empty(initialObject)) {
+          Transaction.wrap(function () {
+            var backInStockEntry = CustomObjectMgr.getCustomObject(
+              BACK_IN_STOCK_CO,
+              productId
+            );
+            backInStockEntry.custom.phoneNumbers =
+              backInStockEntry.custom.phoneNumbers + "," + phoneNumber;
+          });
+        } else {
+          Transaction.wrap(function () {
+            var backInStockEntry = CustomObjectMgr.createCustomObject(
+              BACK_IN_STOCK_CO,
+              productId
+            );
+            backInStockEntry.custom.phoneNumbers = phoneNumber;
+          });
+        }
 
-    // if (phoneValid(phoneNumber)) {
-    //   backInStockForm.valid = true;
-    // }
-
-    try {
-      if (!empty(initialObject)) {
-        Transaction.wrap(function () {
-          var backInStockEntry = CustomObjectMgr.getCustomObject(
-            BACK_IN_STOCK_CO,
-            productId
-          );
-          backInStockEntry.custom.phoneNumbers =
-            backInStockEntry.custom.phoneNumbers + "," + phoneNumber;
-        });
-      } else {
-        Transaction.wrap(function () {
-          var backInStockEntry = CustomObjectMgr.createCustomObject(
-            BACK_IN_STOCK_CO,
-            productId
-          );
-          backInStockEntry.custom.phoneNumbers = phoneNumber;
-        });
+        // res.json({
+        //   success: true,
+        //   // redirectUrl: URLUtils.url("Twilio-Subscribe").toString(),
+        // });
+      } catch (eror) {
+        error = true;
       }
-
-      // res.json({
-      //   success: true,
-      //   // redirectUrl: URLUtils.url("Twilio-Subscribe").toString(),
-      // });
-    } catch (eror) {
+    } else {
       error = true;
     }
 
@@ -117,78 +113,3 @@ server.post(
   }
 );
 module.exports = server.exports();
-
-//backup - working
-// var CustomObjectMgr = require("dw/object/CustomObjectMgr");
-// var Resource = require("dw/web/Resource");
-// var Transaction = require("dw/system/Transaction");
-
-// var backInStockForm = server.forms.getForm("backInStockForm");
-
-// var BACK_IN_STOCK_CO = "NotifyMeBackInStock";
-
-// var productId = req.form.productId;
-// var phoneNumber = req.form.phoneNumbers;
-
-// var initialObject = CustomObjectMgr.getCustomObject(
-//   BACK_IN_STOCK_CO,
-//   productId
-//   // req.form.productId
-// );
-
-// if (!empty(initialObject)) {
-//   Transaction.wrap(function () {
-//     var backInStockEntry = CustomObjectMgr.getCustomObject(
-//       BACK_IN_STOCK_CO,
-//       productId
-//     );
-//     backInStockEntry.custom.phoneNumbers =
-//       backInStockEntry.custom.phoneNumbers + "," + phoneNumber;
-//   });
-// } else {
-//   Transaction.wrap(function () {
-//     var backInStockEntry = CustomObjectMgr.createCustomObject(
-//       BACK_IN_STOCK_CO,
-//       productId
-//       // req.form.productId
-//     );
-//     //take the relevant product on the storefront and assign it to the custom object instance
-//     backInStockEntry.custom.phoneNumbers = phoneNumber;
-//   });
-// }
-// res.json({
-//   success: true,
-//   // redirectUrl: URLUtils.url("Twilio-Subscribe").toString(),
-// });
-
-// return next();
-// backup end
-//
-
-/**
- * Twilio-Subscribe : The Twilio-Subscribe endpoint renders ...
- * @param {serverfunction} - get
- */
-//to be removed
-// server.get(
-//   "Subscribe",
-//   server.middleware.https,
-//   //the token is the hiden field for submitting the form
-//   csrfProtection.generateToken,
-//   // userLoggedIn.validateLoggedIn,
-//   consentTracking.consent,
-//   function (req, res, next) {
-//     // var Resource = require("dw/web/Resource");
-//     var URLUtils = require("dw/web/URLUtils");
-//     // var accountHelpers = require("*/cartridge/scripts/account/accountHelpers");
-
-//     var backInStockForm = server.forms.getForm("backInStockForm");
-//     backInStockForm.clear();
-
-//     res.render("product/components/backInStockForm", {
-//       backInStockForm: backInStockForm,
-//     });
-
-//     next();
-//   }
-// );
