@@ -1,0 +1,22 @@
+{
+  "name": "Youtube",
+  "description": "video",
+  "group": "commerce_assets",
+  "attribute_definition_groups": [
+    {
+      "id": "video",
+      "name": "Youtube video",
+      "description": "You can define the video ID, size and alt text",
+      "attribute_definitions": [
+        {
+          "id": "id",
+          "name": "video",
+          "description": "The video shown",
+          "type": "string",
+          "required": true
+        }
+      ]
+    }
+  ],
+  "region_definitions": []
+}

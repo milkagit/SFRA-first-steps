@@ -3,6 +3,7 @@
   var headerAsset = ContentMgr.getContent('Phone_notification_message')
 </isscript>
 
+
 <isif condition="${!product.available}">
   <div class="row back-to-stock">
     <div class="col-sm-12">

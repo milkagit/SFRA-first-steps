@@ -3,6 +3,7 @@
 /**
  * If the resource to add is not already in the resource array then add it to the array
  * @param {Array} resourceArray - Either the scripts or styles array to which you want to add the resource src to.
+ * @function
  */
 
 function getServiceTwilio(fromNumber, sendToNumber) {
@@ -21,16 +22,6 @@ function getServiceTwilio(fromNumber, sendToNumber) {
       createRequest: function (svc, args) {
         // svc.setRequestMethod("POST"); - post is default
         svc.addHeader("Content-Type", "application/x-www-form-urlencoded");
-        // var bodySMS =
-        //   "From=" +
-        //   fromNumber +
-        //   "&Body=" +
-        //   "Product is back in stock and you can order it." +
-        //   "&To=" +
-        //   sendToNumber;
-        // `From ${fromNumber} &Body= "Product is back in stock and you can order it" &To ${sendToNumber}`
-
-        // return bodySMS;
         return args;
       },
 
@@ -40,10 +31,7 @@ function getServiceTwilio(fromNumber, sendToNumber) {
     }
   );
 
-  // var response = serviceTwilio.call().object;
   var response = serviceTwilio.call(bodySMS);
-
-  // return JSON.parse(response);
   return response;
 }
 

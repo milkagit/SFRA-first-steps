@@ -58,7 +58,8 @@
   <iscomment> phone number field </iscomment>
   <div class="form-group required">
 
-    <input type="text" class="form-control" name="phoneNumbers" id="phoneNumbers" value="${pdict.backInStockForm.phoneNumbers.attributes}"
+    <input type="text" class="form-control" name="phoneNumbers" id="phoneNumbers"
+    value="${pdict.backInStockForm.phoneNumbers.attributes}"
      <isprint
       value="${pdict.backInStockForm.phoneNumbers.attributes}" encoding="off" />>
     <div class="invalid-feedback"></div>

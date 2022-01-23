@@ -1,0 +1,9 @@
+@import "base/component/_productCommon.scss";
+
+.backInStockForm-signup-message {
+  @include toast-message();
+}
+
+.backInStockForm-signup-alert {
+  @include toast-alert();
+}

@@ -1,10 +1,8 @@
 var CustomObjectMgr = require("dw/object/CustomObjectMgr");
 var ProductMgr = require("dw/catalog/ProductMgr");
+var Transaction = require('dw/system/Transaction');
 var serviceTwilio = require('../serviceTwilio')
 
-// var File = require("dw/io/File");
-// var FileWriter = require("dw/io/FileWriter");
-// var CSVStreamWriter = require("dw/io/CSVStreamWriter");
 
 module.exports.execute = function () {
   var objectIterator = CustomObjectMgr.getAllCustomObjects(
@@ -14,47 +12,34 @@ module.exports.execute = function () {
   //if yes -> request to Twilio for each pfone number via another js file in the scripts folder
   //if Twilio success -> delete CO
 
-  // try {
+  try {
     while (objectIterator.hasNext()) {
       var productObject = objectIterator.next();
 
       var productId = productObject.custom.productId;
-      var currentProduct = ProductMgr.getProduct(productId);
-      var currentProductInStock = currentProduct.availabilityModel.isInStock();
+      var currentProductId = ProductMgr.getProduct(productId);
+      var isProductInStock = currentProductId.availabilityModel.isInStock();
 
       var phoneNumbers = productObject.custom.phoneNumbers;
-      var currentPhoneNumbersArr = phoneNumbers.split(",");
+      var phoneNumbersArr = phoneNumbers.split(",");
 
       //to do: remove !
-      if(!currentProductInStock){
-        for each (test in currentPhoneNumbersArr){
-          var sendToNumber = test;
+      if(!isProductInStock){
+        for each (phone in phoneNumbersArr){
+          var sendToNumber = phone;
           var fromNumber = '+15076462030'
 
-          // var bodySMS =
-          // "From=" +
-          // fromNumber +
-          // "&Body=" +
-          // "Product is back in stock and you can order it." +
-          // "&To=" +
-          // sendToNumber;
-
           let response = serviceTwilio.getServiceTwilio(fromNumber, sendToNumber)
-          // return getServiceTwilio.call(bodySMS)
           return response
-
-
         }
+        //   Transaction.wrap(function () {
+        //     CustomObjectMgr.remove(productObject);
+        // });
       }
-
-    //   Transaction.wrap(function () {
-    //     CustomObjectMgr.remove(productObject);
-    // });
-
     }
-
-  // } catch {
-  // } finally {
-  //   objectIterator.close();
-  // }
+  } catch (err) {
+    throw new Error('Validation error', {cause: err})
+  } finally {
+    objectIterator.close();
+  }
 };
