@@ -5,6 +5,25 @@ var server = require("server");
 var csrfProtection = require("*/cartridge/scripts/middleware/csrf");
 var userLoggedIn = require("*/cartridge/scripts/middleware/userLoggedIn");
 var consentTracking = require("*/cartridge/scripts/middleware/consentTracking");
+var URLUtils = require("dw/web/URLUtils");
+
+server.get(
+  "Show",
+
+  function (req, res, next) {
+    var backInStockForm = server.forms.getForm("backInStockForm");
+    backInStockForm.clear();
+
+    var productId = req.httpParameterMap.pid;
+
+    res.render("product/components/backInStockForm", {
+      backInStockForm: backInStockForm,
+      productId: productId,
+    });
+
+    return next();
+  }
+);
 
 /**
  * Twilio-Save : The Twilio-Save endpoint receives the subscription data and passes it to a custom object
@@ -31,11 +50,6 @@ var consentTracking = require("*/cartridge/scripts/middleware/consentTracking");
  * @param {string} phone - phone string to check if valid
  * @returns {boolean} Whether phone is valid
  */
-// function phoneValid(phone) {
-//   // var regex = /^[0-9]*$/;
-//   var regex = /^([+]?359)|0?(|-| )8[789]\d{1}(|-| )\d{3}(|-| )\d{3}$/im;
-//   return regex.test(phone);
-// }
 
 server.post(
   "Save",
@@ -49,10 +63,15 @@ server.post(
 
     var backInStockForm = server.forms.getForm("backInStockForm");
     var BACK_IN_STOCK_CO = "NotifyMeBackInStock";
-    var form = req.form;
 
+    res.render("product/components/backInStockForm", {
+      backInStockForm: backInStockForm,
+    });
+
+    var form = req.form;
     var productId = req.form.productId;
-    var phoneNumber = req.form.phoneNumbers;
+    // var phoneNumber = req.form.phoneNumbers;
+    var phoneNumber = backInStockForm.phoneNumbers.htmlValue;
 
     var initialObject = CustomObjectMgr.getCustomObject(
       BACK_IN_STOCK_CO,
@@ -60,6 +79,16 @@ server.post(
     );
 
     var error = false;
+
+    // if (!empty(initialObject)) {
+    //   backInStockForm.valid = false;
+    //   backInStockForm.phoneNumbers.valid = false;
+    //   backInStockForm.phoneNumbers.error = Resource.msg(
+    //     "error.message.required.phone",
+    //     "forms",
+    //     null
+    //   );
+    // }
 
     if (backInStockForm.valid) {
       try {
@@ -97,14 +126,14 @@ server.post(
       res.json({
         success: false,
         error: true,
+        msg: Resource.msg("failSubscribe.message", "form", null),
         // redirectUrl: URLUtils.url("Twilio-Subscribe").toString(),
-        // msg: Resource.msg("failSubscribe.message", "form", null),
       });
     } else {
       res.json({
         success: true,
         error: false,
-        // msg: Resource.msg("successSubscribe.message", "form", null),
+        msg: Resource.msg("successSubscribe.message", "form", null),
         // redirectUrl: URLUtils.url("Twilio-Subscribe").toString(),
       });
     }

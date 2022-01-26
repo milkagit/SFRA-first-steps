@@ -1,24 +1,24 @@
 <isset name="product" value="${pdict.product}" scope="page" />
 
-<form action="${URLUtils.url('Twilio-Save')}" class="backInStockForm" name="backInStockForm" method="POST"  encoding="off"
-<isprint value="${pdict.backInStockForm.attributes}"/>
-
+${pdict.backInStockForm}
+<form action="${URLUtils.url('Twilio-Save')}" class="backInStockForm" name="${pdict.backInStockForm.htmlName}"
+  method="POST" encoding="off">
+  <div class="backInStockForm-signup-message"></div>
   <iscomment> phone number field </iscomment>
   <div class="form-group required">
 
-    <input type="text" class="form-control" name="phoneNumbers" id="phoneNumbers" required
-     <isprint
-      value="${pdict.backInStockForm.phoneNumbers.attributes}" encoding="off" />>
+    <input type="text" class="form-control" name="${pdict.backInStockForm.phoneNumbers.htmlName}" id="phoneNumbers"
+      required <isprint value="${pdict.backInStockForm.phoneNumbers.attributes}" encoding="off" />>
+
     <div class="invalid-feedback"></div>
   </div>
 
   <iscomment> hidden field for productID </iscomment>
-  <input  type="hidden" class="form-control" id="productId" name="productId" encoding="off" value="${pdict.product.id}"  >
+  <input type="hidden" class="form-control" id="productId" name="productId" encoding="off" value="${pdict.productId}">
 
   <iscomment> submit button </iscomment>
-  <button type="submit" name="save" class="btn btn-backInStock btn-save btn-block btn-primary">${Resource.msg('button.submit', 'form', null)}</button>
+  <button type="submit" name="save"
+    class="btn btn-backInStock btn-save btn-block btn-primary">${Resource.msg('button.submit', 'form', null)}</button>
   <input type="hidden" name="${dw.web.CSRFProtection.getTokenName()}" value="${dw.web.CSRFProtection.generateToken()}">
 
 </form>
-
-<iscomment> value="${pdict.backInStockForm.phoneNumbers.attributes}" </iscomment>

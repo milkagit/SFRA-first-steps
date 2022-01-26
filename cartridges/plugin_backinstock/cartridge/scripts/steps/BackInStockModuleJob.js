@@ -23,8 +23,8 @@ module.exports.execute = function () {
       var phoneNumbers = productObject.custom.phoneNumbers;
       var phoneNumbersArr = phoneNumbers.split(",");
 
-      //to do: remove !
-      if(!isProductInStock){
+      //to do: add ! for testing
+      if(isProductInStock){
         for each (phone in phoneNumbersArr){
           var sendToNumber = phone;
           var fromNumber = '+15076462030'
@@ -32,9 +32,9 @@ module.exports.execute = function () {
           let response = serviceTwilio.getServiceTwilio(fromNumber, sendToNumber)
           return response
         }
-        //   Transaction.wrap(function () {
-        //     CustomObjectMgr.remove(productObject);
-        // });
+          Transaction.wrap(function () {
+            CustomObjectMgr.remove(productObject);
+          });
       }
     }
   } catch (err) {

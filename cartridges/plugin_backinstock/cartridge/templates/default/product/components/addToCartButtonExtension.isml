@@ -29,7 +29,7 @@
 
       <div class="modal-body">
         <div class="container">
-          <isinclude template="/product/components/backInStockForm" value="${product.id}" />
+          <isinclude url="${URLUtils.url('Twilio-Show', 'pid', pdict.product.id)}" value="${product.id}" />
         </div>
       </div>
 
